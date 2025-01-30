@@ -1,0 +1,174 @@
+.order-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+.order-title {
+    color: white;
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.order-form-container {
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+    padding: 2rem;
+}
+
+.order-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.form-group input[type="text"] {
+    padding: 1rem;
+    border-radius: 5px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+
+.form-group input[type="text"]:focus {
+    background: rgba(255, 255, 255, 0.15);
+    outline: none;
+}
+
+.payment-info {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 10px;
+}
+
+.payment-qr {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.payment-details {
+    color: white;
+    font-size: 0.95rem;
+}
+
+.payment-details p {
+    margin-bottom: 0.5rem;
+}
+
+.upload-area {
+    position: relative;
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.upload-area.dragover {
+    border-color: #7fe7ee;
+    background: rgba(127, 231, 238, 0.1);
+}
+
+.upload-area input[type="file"] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-placeholder {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.upload-placeholder svg {
+    width: 48px;
+    height: 48px;
+    stroke: #7fe7ee;
+}
+
+.preview-area {
+    position: relative;
+}
+
+.preview-area img {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 5px;
+}
+
+.remove-image {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #f44336;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.submit-btn {
+    background: #7fe7ee;
+    color: white;
+    border: none;
+    padding: 1.25rem;
+    border-radius: 100px;
+    cursor: pointer;
+    font-family: "Open Sans", sans-serif;
+    font-size: 1.125rem;
+    font-weight: 400;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+}
+
+.submit-btn:hover {
+    opacity: 1;
+}
+
+.submit-btn:active {
+    opacity: 0.75;
+}
+
+@media (max-width: 768px) {
+    .payment-info {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+.alert-error {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}

@@ -1,0 +1,325 @@
+/* Base Layout */
+.store-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+.store-title {
+    color: white;
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+/* Navigation */
+.back-button {
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.75rem 1.25rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 100;
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(-5px);
+}
+
+.back-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Category Navigation */
+.store-categories {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.category-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-weight: 500;
+}
+
+.category-btn:hover,
+.category-btn.active {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Store Grid Layout */
+.store-section {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.store-section.active {
+    display: block;
+}
+
+.store-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Store Item Cards */
+.store-item {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.store-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* Card Headers */
+.item-header {
+    padding: 1.5rem;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.item-header h3 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.price {
+    display: block;
+    font-size: 1.4rem;
+    margin-top: 0.5rem;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Rank-specific Headers */
+.item-header.vip {
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
+}
+.item-header.pro {
+    background: linear-gradient(135deg, #03a9f4, #0277bd);
+}
+.item-header.elite {
+    background: linear-gradient(135deg, #9c27b0, #6a1b9a);
+}
+.item-header.epic {
+    background: linear-gradient(135deg, #ff9800, #ef6c00);
+}
+.item-header.legend {
+    background: linear-gradient(135deg, #f44336, #c62828);
+}
+
+/* Card Content */
+.item-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-height: 320px;
+}
+
+.rank-description {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+    margin: 0;
+    text-align: center;
+    line-height: 1.5;
+}
+
+/* Features List */
+.features-container {
+    margin: 0;
+    flex-grow: 1;
+}
+
+.features-container h4 {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.perks-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.perks-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.feature-icon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: #7fe7ee;
+}
+
+/* Purchase Button */
+.buy-btn {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: "Open Sans", sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.buy-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+/* Rank-specific Button Hover Effects */
+.vip .buy-btn:hover {
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+.pro .buy-btn:hover {
+    box-shadow: 0 4px 12px rgba(3, 169, 244, 0.3);
+}
+.elite .buy-btn:hover {
+    box-shadow: 0 4px 12px rgba(156, 39, 176, 0.3);
+}
+.epic .buy-btn:hover {
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+}
+.legend .buy-btn:hover {
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+}
+
+/* Coming Soon Sections */
+.coming-soon {
+    text-align: center;
+    padding: 3rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    margin: 2rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.coming-soon h3 {
+    color: white;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.coming-soon p {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Alert Messages */
+.alert {
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    animation: fadeOut 5s forwards;
+    backdrop-filter: blur(10px);
+}
+
+.alert-success {
+    background: rgba(47, 223, 117, 0.15);
+    color: #2fdf75;
+    border: 1px solid rgba(47, 223, 117, 0.2);
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    70% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .store-container {
+        padding: 1rem;
+    }
+
+    .back-button {
+        top: 1rem;
+        left: 1rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .store-categories {
+        flex-wrap: wrap;
+    }
+
+    .store-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .item-header h3 {
+        font-size: 1.5rem;
+    }
+}
