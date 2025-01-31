@@ -39,4 +39,9 @@ return [
         'webhook_url' => env('DISCORD_WEBHOOK_URL'),
     ],
 
+    'imgur' => [
+        'client_id' => env('IMGUR_CLIENT_ID'),
+        'client_secret' => env('IMGUR_CLIENT_SECRET'),
+    ],
+
 ];
