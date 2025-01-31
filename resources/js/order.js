@@ -1,3 +1,21 @@
+// Global function for form submission
+function showLoading() {
+    // Show loading overlay with animation
+    document.getElementById("loadingOverlay").style.display = "flex";
+    document.getElementById("orderForm").classList.add("form-submitting");
+
+    // Animate submit button
+    const submitBtn = document.querySelector('button[type="submit"]');
+    submitBtn.classList.add("processing");
+    submitBtn.disabled = true;
+
+    // Store original button text
+    submitBtn.setAttribute("data-original-text", submitBtn.textContent);
+    submitBtn.textContent = "";
+
+    return true;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const uploadArea = document.getElementById("uploadArea");
     const fileInput = document.getElementById("proof");
@@ -5,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const imagePreview = document.getElementById("imagePreview");
     const placeholder = document.querySelector(".upload-placeholder");
     const removeButton = document.querySelector(".remove-image");
+    const orderForm = document.getElementById("orderForm");
 
     // Maximum file size in bytes (5MB)
     const MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -92,7 +111,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Add form submit handler
-    const orderForm = document.getElementById("orderForm");
     if (orderForm) {
         orderForm.addEventListener("submit", function (e) {
             const rankInput = this.querySelector('input[name="rank"]');
@@ -101,51 +119,53 @@ document.addEventListener("DOMContentLoaded", () => {
             // Make inputs readonly
             if (rankInput) rankInput.readOnly = true;
             if (priceInput) priceInput.readOnly = true;
-        });
-    }
 
-    function showLoading() {
-        // Show loading overlay with animation
-        document.getElementById("loadingOverlay").style.display = "flex";
-        document.getElementById("orderForm").classList.add("form-submitting");
-
-        // Animate submit button
-        const submitBtn = document.querySelector('button[type="submit"]');
-        submitBtn.classList.add("processing");
-        submitBtn.disabled = true;
-
-        // Store original button text
-        submitBtn.setAttribute("data-original-text", submitBtn.textContent);
-        submitBtn.textContent = "";
-
-        // Add success animation after form submission
-        const form = document.getElementById("orderForm");
-        form.addEventListener("submit", function (e) {
             // Prevent double submission
-            if (form.classList.contains("submitted")) {
+            if (this.classList.contains("submitted")) {
                 e.preventDefault();
                 return;
             }
-            form.classList.add("submitted");
+            this.classList.add("submitted");
         });
-
-        return true;
     }
 
-    // Hide loading on page load (in case of back navigation)
-    document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("loadingOverlay").style.display = "none";
-        document
-            .getElementById("orderForm")
-            .classList.remove("form-submitting");
+    // Initialize page state
+    document.getElementById("loadingOverlay").style.display = "none";
+    orderForm.classList.remove("form-submitting");
+    const submitBtn = document.querySelector('button[type="submit"]');
+    if (submitBtn.hasAttribute("data-original-text")) {
+        submitBtn.textContent = submitBtn.getAttribute("data-original-text");
+        submitBtn.classList.remove("processing");
+        submitBtn.disabled = false;
+    }
+});
 
-        // Reset button state
-        const submitBtn = document.querySelector('button[type="submit"]');
-        if (submitBtn.hasAttribute("data-original-text")) {
-            submitBtn.textContent =
-                submitBtn.getAttribute("data-original-text");
-            submitBtn.classList.remove("processing");
-            submitBtn.disabled = false;
-        }
+// QR Modal functionality
+document
+    .querySelector(".payment-qr-container")
+    .addEventListener("click", function () {
+        const modal = document.getElementById("qrModal");
+        modal.style.display = "flex";
+        document.body.style.overflow = "hidden";
     });
+
+document.querySelector(".close-modal").addEventListener("click", function () {
+    const modal = document.getElementById("qrModal");
+    modal.style.display = "none";
+    document.body.style.overflow = "";
+});
+
+document.getElementById("qrModal").addEventListener("click", function (e) {
+    if (e.target === this) {
+        this.style.display = "none";
+        document.body.style.overflow = "";
+    }
+});
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+        const modal = document.getElementById("qrModal");
+        modal.style.display = "none";
+        document.body.style.overflow = "";
+    }
 });

@@ -68,8 +68,7 @@
             </div>
         </div>
     
-        <script src="/js/firefly.js" type="text/javascript"></script>
-        <script src="/js/main.js" type="text/javascript"></script>
+        
         <footer class="footer">
             <span>Copyright © 2023-2025 UnicornMC. All Rights Reserved.</span>
         </footer>

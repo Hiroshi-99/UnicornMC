@@ -81,7 +81,12 @@
                     <div class="form-group">
                         <label>Payment Proof</label>
                         <div class="payment-info">
-                            <img src="/images/jjqr.jpg" alt="Payment QR Code" class="payment-qr">
+                            <div class="payment-qr-container">
+                                <img src="/images/jjqr.jpg" alt="Payment QR Code" class="payment-qr" id="qrImage">
+                                <div class="qr-overlay">
+                                    <span>Click to view</span>
+                                </div>
+                            </div>
                             <div class="payment-details">
                                 <p>1. Scan QR code or copy account details</p>
                                 <p>2. Complete payment for ${{ $price }}</p>
@@ -118,6 +123,19 @@
         <footer class="footer">
             <span>Copyright © 2023-2025 UnicornMC. All Rights Reserved.</span>
         </footer>
+
+        <!-- QR Modal -->
+        <div id="qrModal" class="qr-modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <img 
+                    src="/images/jjqr.jpg" 
+                    alt="Payment QR Code" 
+                    class="modal-qr-image"
+                    style="min-width: 300px; min-height: 300px;"
+                >
+            </div>
+        </div>
 
         @vite(['resources/js/order.js'])
     </body>
