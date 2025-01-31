@@ -149,4 +149,114 @@ return [
             ],
         ],
     ],
+    
+    'money' => [
+        'money_1m' => [
+            'display_name' => '1M Coins',
+            'price' => 5.00,
+            'type' => 'money',
+            'amount' => 1000000,
+            'description' => 'Purchase 1,000,000 in-game coins',
+            'features' => [
+                'display_features' => [
+                    '1,000,000 In-Game Coins',
+                    'Instant Delivery',
+                    '24/7 Support'
+                ]
+            ]
+        ],
+        'money_2m' => [
+            'display_name' => '2M Coins',
+            'price' => 10,
+            'type' => 'money',
+            'amount' => 2000000,
+            'description' => 'Purchase 2,000,000 in-game coins',
+            'features' => [
+                'display_features' => [
+                    '2,000,000 In-Game Coins',
+                    'Instant Delivery',
+                    '24/7 Support'
+                ]
+            ]
+        ],
+        'money_3m' => [
+            'display_name' => '3M Coins',
+            'price' => 15,
+            'type' => 'money',
+            'amount' => 3000000,
+            'description' => 'Purchase 3,000,000 in-game coins',
+            'features' => [
+                'display_features' => [
+                    '3,000,000 In-Game Coins',
+                    'Instant Delivery',
+                    '24/7 Support'
+                ]
+            ]
+        ],
+        'money_5m' => [
+            'display_name' => '5M Coins',
+            'price' => 20,
+            'type' => 'money',
+            'amount' => 5000000,
+            'description' => 'Purchase 5,000,000 in-game coins',
+            'features' => [
+                'display_features' => [
+                    '5,000,000 In-Game Coins',
+                    'Instant Delivery',
+                    '24/7 Support'
+                ]
+            ]
+        ]
+    ],
+    
+    'plots' => [
+        'plot_vip1' => [
+            'display_name' => 'Plot VIP I',
+            'price' => 12.00,
+            'type' => 'plot',
+            'size' => '107x107',
+            'description' => 'Premium VIP I Plot - Limited availability near spawn!',
+            'features' => [
+                'display_features' => [
+                    '107x107 Plot Size',
+                    'Premium Spawn Location',
+                    'Limited Edition (Only 12 Available)',
+                    'Instant Delivery',
+                    '24/7 Support'
+                ]
+            ]
+        ],
+        'plot_vip2' => [
+            'display_name' => 'Plot VIP II',
+            'price' => 6,
+            'type' => 'plot',
+            'size' => '107x40',
+            'description' => 'Premium VIP II Plot - Great location near spawn!',
+            'features' => [
+                'display_features' => [
+                    '107x40 Plot Size',
+                    'Near Spawn Location',
+                    'Limited Edition (Only 16 Available)',
+                    'Instant Delivery',
+                    '24/7 Support'
+                ]
+            ]
+        ],
+        'plot_normal' => [
+            'display_name' => 'Normal Plot',
+            'price' => 2.5,
+            'type' => 'plot',
+            'size' => '40x40',
+            'description' => 'Standard Plot - Perfect for starting your build journey!',
+            'features' => [
+                'display_features' => [
+                    '40x40 Plot Size',
+                    'Standard Plot Protection',
+                    'Unlimited Availability',
+                    'Instant Delivery',
+                    '24/7 Support'
+                ]
+            ]
+        ]
+    ]
 ]; 

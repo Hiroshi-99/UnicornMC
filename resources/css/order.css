@@ -148,16 +148,51 @@
     font-family: "Open Sans", sans-serif;
     font-size: 1.125rem;
     font-weight: 400;
-    opacity: 0.85;
-    transition: opacity 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    transform: scale(1);
 }
 
-.submit-btn:hover {
-    opacity: 1;
+.submit-btn:not(:disabled):hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(127, 231, 238, 0.4);
 }
 
-.submit-btn:active {
-    opacity: 0.75;
+.submit-btn.processing {
+    background: #7fe7ee;
+    color: transparent;
+    pointer-events: none;
+}
+
+.submit-btn.processing::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top-color: white;
+    border-radius: 50%;
+    animation: button-loading-spinner 0.8s ease infinite;
+}
+
+@keyframes button-loading-spinner {
+    from {
+        transform: rotate(0turn);
+    }
+    to {
+        transform: rotate(1turn);
+    }
+}
+
+.submit-btn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    transform: scale(1);
+    box-shadow: none;
 }
 
 @media (max-width: 768px) {
@@ -171,4 +206,104 @@
     background: rgba(244, 67, 54, 0.2);
     color: #f44336;
     border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+/* Platform Selector Styles */
+.platform-selector {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.platform-option {
+    flex: 1;
+    cursor: pointer;
+}
+
+.platform-option input[type="radio"] {
+    display: none;
+}
+
+.platform-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1.2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.platform-content img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+.platform-content span {
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.platform-option input[type="radio"]:checked + .platform-content {
+    background: rgba(127, 231, 238, 0.2);
+    border-color: #7fe7ee;
+    transform: translateY(-2px);
+}
+
+.platform-option:hover .platform-content {
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loading-content {
+    text-align: center;
+    color: white;
+}
+
+.loading-content p {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: #7fe7ee;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(127, 231, 238, 0.1);
+    border-left-color: #7fe7ee;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Disable form during submission */
+.form-submitting {
+    opacity: 0.7;
+    pointer-events: none;
 }

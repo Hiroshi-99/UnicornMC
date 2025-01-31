@@ -61,7 +61,10 @@ class DiscordWebhook
             // Convert image content to base64
             $base64Image = base64_encode($imageContent);
 
-            $response = Http::withHeaders([
+            // Use Http client with SSL verification disabled
+            $response = Http::withOptions([
+                'verify' => false // Disable SSL verification
+            ])->withHeaders([
                 'Authorization' => 'Client-ID ' . $this->imgurClientId,
                 'Content-Type' => 'application/json'
             ])->post('https://api.imgur.com/3/upload', [
@@ -104,132 +107,142 @@ class DiscordWebhook
     public function sendOrderNotification($order)
     {
         try {
-            // Upload image to Imgur first
-            $imgurUrl = null;
-            if (!empty($order['proof_url'])) {
-                try {
-                    $imgurUrl = $this->uploadToImgur($order['proof_url']);
-                } catch (\Exception $e) {
-                    // If Imgur upload fails, fall back to original URL
-                    Log::warning('Imgur upload failed, falling back to original URL', [
-                        'original_url' => $order['proof_url']
-                    ]);
-                    $imgurUrl = $order['proof_url'];
-                }
+            $productType = ucfirst($order['product_type'] ?? 'Rank');
+            
+            // Get the image file path
+            $relativePath = str_replace('/storage/', '', parse_url($order['proof_url'], PHP_URL_PATH));
+            $absolutePath = storage_path('app/public/' . $relativePath);
+
+            if (!file_exists($absolutePath)) {
+                throw new \Exception('Image file not found: ' . $absolutePath);
             }
 
+            // Create a cleaner embed
             $embed = [
-                'title' => '🛒 New Store Order #' . ($order['id'] ?? 'N/A'),
-                'description' => "A new order has been placed and is pending verification!",
-                'color' => hexdec('7fe7ee'),
+                'title' => '🛍️ New Purchase Order',
+                'description' => "```diff\n+ New order has been submitted to UnicornMC Store!\n+ Please check and process this order.```",
+                'color' => $this->getColorByType($order['product_type']),
                 'fields' => [
                     [
-                        'name' => '🏆 Rank',
-                        'value' => $order['rank'],
+                        'name' => '👤 Username',
+                        'value' => "```\n{$order['username']}```",
+                        'inline' => true
+                    ],
+                    [
+                        'name' => '🎮 Platform',
+                        'value' => $order['platform'] === 'java' ? 
+                            "```\n☕ Java Edition```" : 
+                            "```\n📱 Bedrock Edition```",
+                        'inline' => true
+                    ],
+                    [
+                        'name' => '🏷️ Product',
+                        'value' => "```\n{$order['product_name']}```",
                         'inline' => true
                     ],
                     [
                         'name' => '💰 Price',
-                        'value' => '$' . number_format($order['price'], 2),
+                        'value' => "```\n$" . number_format($order['price'], 2) . "```",
                         'inline' => true
                     ],
                     [
-                        'name' => '👤 Username',
-                        'value' => $order['username'],
-                        'inline' => true
-                    ],
-                    [
-                        'name' => '⏰ Order Time',
-                        'value' => now()->format('Y-m-d H:i:s'),
-                        'inline' => true
-                    ],
-                    [
-                        'name' => '🌐 IP Address',
-                        'value' => $order['ip_address'] ?? 'Unknown',
-                        'inline' => true
+                        'name' => '📝 Order Details',
+                        'value' => "```yaml\nType: {$productType}\nPlatform: " . 
+                            ($order['platform'] === 'java' ? '☕ Java' : '📱 Bedrock') . 
+                            "\nStatus: ⏳ Pending\nOrder ID: " . substr(md5(uniqid()), 0, 8) . "```",
+                        'inline' => false
                     ]
                 ],
-                'thumbnail' => [
-                    'url' => 'https://mc-heads.net/avatar/' . urlencode($order['username'])
-                ],
                 'footer' => [
-                    'text' => 'UnicornMC Store • Order needs verification'
+                    'text' => '🦄 UnicornMC Store • Order System'
                 ],
                 'timestamp' => now()
             ];
 
-            // Add image to embed only if we have an Imgur URL
-            if ($imgurUrl) {
-                $embed['image'] = [
-                    'url' => $imgurUrl
-                ];
-            }
-
-            $data = [
-                'content' => "New order received!",
-                'embeds' => [$embed]
-            ];
-
-            $response = Http::timeout($this->timeout)
-                ->withHeaders([
-                    'User-Agent' => 'UnicornMC-Store/1.0',
+            // Prepare the multipart request with role mention
+            $response = Http::withOptions([
+                'verify' => false
+            ])->attach(
+                'file',
+                file_get_contents($absolutePath),
+                'payment_proof.jpg',
+                ['Content-Type' => 'image/jpeg']
+            )->post($this->webhookUrl, [
+                'content' => '🔔 **New Order Alert!** <@&1334942311695777903>',
+                'payload_json' => json_encode([
+                    'embeds' => [$embed]
                 ])
-                ->post($this->webhookUrl, $data);
+            ]);
 
             if (!$response->successful()) {
-                Log::error('Discord webhook failed with status: ' . $response->status(), [
-                    'response' => $response->body(),
-                    'order' => $order
+                Log::error('Discord webhook failed', [
+                    'status' => $response->status(),
+                    'response' => $response->json()
                 ]);
-                throw new \Exception('Discord webhook request failed: ' . $response->status());
+                throw new \Exception('Discord webhook failed: ' . $response->status());
             }
 
-            Log::info('Discord webhook sent successfully', ['order' => $order]);
-            return $response;
+            Log::info('Order notification sent successfully', [
+                'username' => $order['username'],
+                'product' => $order['product_name']
+            ]);
 
         } catch (\Exception $e) {
-            Log::error('Discord webhook error: ' . $e->getMessage(), [
-                'order' => $order,
+            Log::error('Discord webhook failed: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString()
             ]);
             throw $e;
         }
     }
 
+    protected function getColorByType($type)
+    {
+        return match($type) {
+            'money' => 0x2ECC71,  // Emerald Green
+            'plot' => 0x9B59B6,   // Amethyst Purple
+            default => 0xE91E63    // Pink
+        };
+    }
+
     public function sendMessage($message, $files = [])
     {
-        $data = [
-            'content' => $message,
-        ];
-
-        // Add files/images if present
-        if (!empty($files)) {
-            $multipart = [];
-            
-            // Add the message content as a part
-            $multipart[] = [
-                'name' => 'payload_json',
-                'contents' => json_encode($data),
+        try {
+            $data = [
+                'content' => $message,
             ];
 
-            // Add each file as a part
-            foreach ($files as $index => $file) {
-                $multipart[] = [
-                    'name' => "file$index",
-                    'contents' => fopen($file, 'r'),
-                    'filename' => basename($file)
-                ];
+            if (empty($files)) {
+                return Http::withOptions([
+                    'verify' => false
+                ])->post($this->webhookUrl, $data);
             }
 
-            // Send with multipart form data
-            return Http::attach(
-                'files[]', 
-                file_get_contents($files[0]), 
+            // Handle file attachments
+            $response = Http::withOptions([
+                'verify' => false
+            ])->attach(
+                'file',
+                file_get_contents($files[0]),
                 basename($files[0])
-            )->post($this->webhookUrl, $multipart);
-        }
+            )->post($this->webhookUrl, [
+                'payload_json' => json_encode($data)
+            ]);
 
-        // Send regular message without files
-        return Http::post($this->webhookUrl, $data);
+            if (!$response->successful()) {
+                Log::error('Failed to send message', [
+                    'status' => $response->status(),
+                    'response' => $response->json()
+                ]);
+                throw new \Exception('Failed to send message: ' . $response->status());
+            }
+
+            return $response;
+
+        } catch (\Exception $e) {
+            Log::error('Send message failed: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
     }
 } 
