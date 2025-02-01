@@ -1,5 +1,94 @@
+// Replace jQuery AJAX setup with vanilla JS
+const token = document.querySelector('meta[name="csrf-token"]').content;
+
+// Add this to any fetch/XHR requests
+const headers = {
+    "X-CSRF-TOKEN": token,
+    // other headers as needed
+};
+
 // Global function for form submission
-function showLoading() {
+window.showLoading = async function () {
+    try {
+        // Basic client-side validation
+        const username = document.getElementById("username").value.trim();
+        const platform = document.querySelector(
+            'input[name="platform"]:checked'
+        );
+        const proof = document.getElementById("proof").files[0];
+        const recaptcha = grecaptcha.getResponse();
+
+        let errors = [];
+
+        if (!username) {
+            errors.push("Please enter your Minecraft username");
+        } else if (username.length > 16) {
+            errors.push("Username cannot exceed 16 characters");
+        } else if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+            errors.push(
+                "Username can only contain letters, numbers, and underscores"
+            );
+        }
+
+        if (!platform) {
+            errors.push("Please select your Minecraft platform");
+        }
+
+        if (!proof) {
+            errors.push("Please upload your payment proof");
+        } else {
+            // Check file size
+            if (proof.size > 5 * 1024 * 1024) {
+                errors.push("Image size cannot exceed 5MB");
+            }
+        }
+
+        if (!recaptcha) {
+            errors.push(
+                "Please verify that you're not a robot by completing the reCAPTCHA"
+            );
+        }
+
+        if (errors.length > 0) {
+            showErrors(errors);
+            return false;
+        }
+
+        // Show loading state
+        document.getElementById("loadingOverlay").style.display = "flex";
+        document.getElementById("orderForm").classList.add("form-submitting");
+
+        const submitBtn = document.querySelector('button[type="submit"]');
+        submitBtn.classList.add("processing");
+        submitBtn.disabled = true;
+        submitBtn.setAttribute("data-original-text", submitBtn.textContent);
+        submitBtn.textContent = "Processing...";
+
+        return true;
+    } catch (error) {
+        console.error("Form submission error:", error);
+        return false;
+    }
+};
+
+function showErrors(errors) {
+    const errorDiv = document.createElement("div");
+    errorDiv.className = "alert alert-error";
+    errorDiv.innerHTML = `<ul>${errors
+        .map((e) => `<li>${e}</li>`)
+        .join("")}</ul>`;
+
+    const existingAlert = document.querySelector(".alert");
+    if (existingAlert) {
+        existingAlert.remove();
+    }
+
+    document
+        .querySelector(".order-form-container")
+        .insertBefore(errorDiv, document.getElementById("orderForm"));
+}
+
+function startLoading() {
     // Show loading overlay with animation
     document.getElementById("loadingOverlay").style.display = "flex";
     document.getElementById("orderForm").classList.add("form-submitting");
@@ -24,6 +113,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const placeholder = document.querySelector(".upload-placeholder");
     const removeButton = document.querySelector(".remove-image");
     const orderForm = document.getElementById("orderForm");
+
+    // Copy phone number functionality
+    document.querySelector(".copy-btn").addEventListener("click", function () {
+        const phoneNumber = document.getElementById("phoneNumber").textContent;
+        navigator.clipboard.writeText(phoneNumber).then(() => {
+            const copyBtn = this;
+            const copyText = copyBtn.querySelector(".copy-text");
+
+            // Show copied state
+            copyBtn.classList.add("copied");
+            copyText.textContent = "Copied!";
+
+            // Reset after 2 seconds
+            setTimeout(() => {
+                copyBtn.classList.remove("copied");
+                copyText.textContent = "Copy";
+            }, 2000);
+        });
+    });
 
     // Maximum file size in bytes (5MB)
     const MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -167,5 +275,26 @@ document.addEventListener("keydown", function (e) {
         const modal = document.getElementById("qrModal");
         modal.style.display = "none";
         document.body.style.overflow = "";
+    }
+});
+
+// CSRF handling
+document.addEventListener("DOMContentLoaded", function () {
+    const token = document.querySelector('meta[name="csrf-token"]')?.content;
+
+    if (token) {
+        $.ajaxSetup({
+            headers: {
+                "X-CSRF-TOKEN": token,
+            },
+        });
+    }
+});
+
+// Remove the automatic token refresh to avoid message channel issues
+// Instead, handle token refresh only when needed (on 419 errors)
+$(document).ajaxError(function (event, jqXHR) {
+    if (jqXHR.status === 419) {
+        window.location.reload();
     }
 });

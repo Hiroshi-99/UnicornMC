@@ -129,6 +129,13 @@ class DiscordWebhook
                         'inline' => true
                     ],
                     [
+                        'name' => '🎭 Discord',
+                        'value' => $order['discord'] ? 
+                            "```\n{$order['discord']}```" : 
+                            "```\nNot provided```",
+                        'inline' => true
+                    ],
+                    [
                         'name' => '🎮 Platform',
                         'value' => $order['platform'] === 'java' ? 
                             "```\n☕ Java Edition```" : 

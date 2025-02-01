@@ -68,7 +68,7 @@
             </div>
         </div>
     
-        
+    
         <footer class="footer">
             <span>Copyright © 2023-2025 UnicornMC. All Rights Reserved.</span>
         </footer>
