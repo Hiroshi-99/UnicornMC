@@ -37,6 +37,10 @@ return [
 
     'discord' => [
         'webhook_url' => env('DISCORD_WEBHOOK_URL'),
+        'bot_token' => env('DISCORD_BOT_TOKEN'),
+        'owner_id' => env('DISCORD_OWNER_ID'),
+        'guild_id' => env('DISCORD_GUILD_ID'),
+        'channel_id' => env('DISCORD_CHANNEL_ID'),
     ],
 
     'imgur' => [

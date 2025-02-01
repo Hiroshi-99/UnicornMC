@@ -9,11 +9,19 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
+use App\Services\DiscordBot;
 
 class OrderController extends Controller
 {
     private const HOURLY_LIMIT = 5;  // Max orders per hour
     private const DAILY_LIMIT = 10;   // Max orders per day
+
+    private $discordBot;
+
+    public function __construct(DiscordBot $discordBot)
+    {
+        $this->discordBot = $discordBot;
+    }
 
     public function store(Request $request)
     {
@@ -158,9 +166,6 @@ class OrderController extends Controller
                 return redirect()->route('store')->with('error', 'Invalid order parameters. Please try ordering again.');
             }
 
-            // Store the image
-            $path = $request->file('proof')->store('proofs', 'public');
-            
             // Format username based on platform
             $username = $validated['username'];
             if ($validated['platform'] === 'bedrock') {
@@ -169,19 +174,19 @@ class OrderController extends Controller
             
             // Create order data
             $order = [
+                'id' => uniqid('order_'),
                 'username' => $username,
                 'platform' => $validated['platform'],
                 'discord' => $validated['discord'] ?? null,
                 'rank' => $validated['rank'],
                 'price' => $validated['price'],
-                'proof_url' => config('app.url') . '/storage/' . $path,
                 'product_name' => $product['display_name'],
-                'product_type' => $product['type'] ?? 'rank'
+                'product_type' => $product['type'] ?? 'rank',
+                'status' => 'pending'
             ];
 
-            // Send Discord notification
-            $discord = new DiscordWebhook();
-            $discord->sendOrderNotification($order);
+            // Send Discord notification with file directly
+            $this->discordBot->sendOrderNotification($order, $request->file('proof'));
 
             return redirect('/store')->with('success', 'Order submitted successfully! We will process it shortly.');
 

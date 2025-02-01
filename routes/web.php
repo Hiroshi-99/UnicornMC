@@ -3,11 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use App\Services\DiscordWebhook;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\OrderController;
 use App\Http\Middleware\VerifyHoneypot;
-use Illuminate\Session\Middleware\StartSession;
 
 Route::get('/', function () {
     return view('home');
@@ -29,20 +26,24 @@ Route::post('/order', [OrderController::class, 'store'])
     ])
     ->name('order.store');
 
-// Add this temporary route
-Route::get('/db-test', function () {
-    try {
-        DB::connection()->getPdo();
-        return "Database connection successful. Connected to database: " . DB::connection()->getDatabaseName();
-    } catch (\Exception $e) {
-        return "Database connection failed: " . $e->getMessage();
-    }
-});
-
-// Add this route for CSRF token refresh
+// CSRF token refresh route
 Route::get('/csrf-token', function () {
     return response()->json([
         'token' => csrf_token()
     ]);
 })->middleware('web');
+
+// Discord interaction endpoint
+Route::post('/discord/interaction', function (Request $request) {
+    if ($request->input('type') === 1) {
+        return response()->json(['type' => 1]);
+    }
+
+    if ($request->input('type') === 3) {
+        $customId = $request->input('data.custom_id');
+        // Handle approve/reject logic here
+    }
+
+    return response()->json(['type' => 1]);
+})->middleware('api');
 
